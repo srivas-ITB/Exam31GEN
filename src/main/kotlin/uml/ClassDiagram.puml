@@ -1,27 +1,74 @@
 @startuml
 'https://plantuml.com/class-diagram
 
-abstract class AbstractList
-abstract AbstractCollection
-interface List
-interface Collection
-
-List <|-- AbstractList
-Collection <|-- AbstractCollection
-
-Collection <|- List
-AbstractCollection <|- AbstractList
-AbstractList <|-- ArrayList
-
-class ArrayList {
-Object[] elementData
-size()
+class Cadena {
+    - nom : String
+    - restaurants: List<Restaurant>
+    + afegirRestaurant(Restaurant)
 }
 
-enum TimeUnit {
-DAYS
-HOURS
-MINUTES
+abstract class Restaurant {
+    - nom: String
+    - poblacio: String
+    - tipusCuina: String
+    - plats : List<Plat>
+    {abstract} imprimirTiquet(): String
+    {abstract} demanarCompte(Client): Double
+    + demanar(Plat) : Boolean
 }
 
+ class Plat {
+    -nom: String
+    -preu: Double
+ }
+
+class RestaurantBuffetLliure {
+  -preu : Double
+}
+
+
+class RestaurantCarta {
+    -numSalons: Int
+    -admetEvents: Boolean
+}
+
+class RestaurantTematic {
+  -tematica: String
+  -espectacle : Espectacle
+}
+
+class Espectacle {
+    -nom: String
+    -acabament : Data
+}
+
+class Client {
+    -nom:String
+    -telefon: String
+    -restaurant : Restaurant
+    -demanats: List<Plat>
+    +demanarCompte(): Double
+
+}
+
+interface Reservable {
+    -reserves: List<Client>
+    +ferReserva(Client)
+}
+
+Cadena *-- Restaurant
+
+Restaurant <|-- RestaurantBuffetLliure
+Restaurant <|-- RestaurantTematic
+
+Restaurant <|-- RestaurantCarta
+
+Reservable <|.down. RestaurantTematic
+Reservable <|.down. RestaurantCarta
+
+RestaurantTematic o-right- Espectacle
+Restaurant o-left- Plat
+Restaurant -left-o Client
+Client o-right-Plat
+Reservable o-left- Client
 @enduml
